@@ -1,0 +1,87 @@
+Table curso {
+  codigo varchar(50) [pk]
+  nombre varchar(50)
+  horas_catedra number
+  horas_laboratorio number
+  nivel number
+  es_atemporal number
+  es_curso_general number
+  cantidad_de_estudiantes number
+}
+
+Table profesor {
+  codigo number [pk]
+  nombre varchar(50)
+  apellido_materno varchar(50)
+  apellido_paterno varchar(50)
+  es_full_time number
+}
+
+Table sala {
+  codigo varchar(50) [pk]
+  nombre varchar(50)
+  capacidad number
+  es_laboratorio number
+}
+
+Table seccion {
+  codigo varchar(50) [pk]
+  codigo_profesor number
+  codigo_curso varchar(50) [pk]
+  codigo_sala_catedra varchar(50)
+  codigo_sala_laboratorio varchar(50)
+  cantidad_de_estudiantes_seccion number
+}
+
+
+Table profesor_bloques_disponibles {
+  codigo_profesor number [pk]
+  codigo_dia number [pk]
+  codigo_bloque number [pk]
+}
+
+Table seccion_bloque_dia {
+  codigo_seccion varchar(50) [pk]
+  codigo_curso varchar(50) [pk]
+  codigo_dia number [pk]
+  codigo_bloque number [pk]
+  es_bloque_de_laboratorio number
+}
+
+Table bloque {
+  codigo_bloque number [pk]
+  horario_inicio varchar(50)
+  horario_termino varchar(50)
+}
+
+Table dia {
+  codigo_dia number [pk]
+  nombre_dia varchar(50)
+}
+
+Table usuario {
+  codigo_usuario number [pk]
+  nombre varchar
+  apellido_paterno varchar
+  apellido_materno varchar
+  correo varchar
+  codigo_role number
+}
+
+Table role {
+  codigo_role number [pk]
+  nombre_role varchar
+}
+
+Ref: profesor_bloques_disponibles.codigo_profesor > profesor.codigo
+Ref: profesor_bloques_disponibles.codigo_dia > dia.codigo_dia
+Ref: profesor_bloques_disponibles.codigo_bloque > bloque.codigo_bloque
+Ref: seccion.codigo_profesor > profesor.codigo
+Ref: seccion.codigo_curso> curso.codigo 
+Ref: seccion.codigo_sala_catedra > sala.codigo
+Ref: seccion.codigo_sala_laboratorio > sala.codigo
+Ref: seccion_bloque_dia.codigo_seccion > seccion.codigo
+Ref: seccion_bloque_dia.codigo_curso > seccion.codigo_curso
+Ref: seccion_bloque_dia.codigo_dia > dia.codigo_dia
+Ref: seccion_bloque_dia.codigo_bloque > bloque.codigo_bloque
+Ref: role.codigo_role> usuario.codigo_role
