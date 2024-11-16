@@ -1,0 +1,37 @@
+El proyecto debe permitir crear secciones de cursos
+cuando se se debe especificar el curso, el docente, y la sala.
+una vez creada la seccion, empieza la funcionalidad core del proyecto
+que es poder asignar una seccion a bloques del horario
+El horario es de lunes a sabado y tiene 12 bloques.
+
+para la logica de las validaciones,
+se debe validar al momento de asignar una seccion a un bloque
+
+1. que la sala de la seccion no este ocupada en el bloque
+
+2. que el docente no este ocupado en el bloque
+
+3. 1 mismo curso SI puede darse en el mismo bloque y mismo dia, 
+lo que no puede ser es la misma seccion del mismo curso
+
+para eso en la base de datos se programara con oracle sql, usando procedimientos almacenados, funciones y triggers
+
+una funcion debe validar si la sala esta ocupada en el bloque y devolver un booleano
+una funcion debe validar si el docente esta ocupado en el bloque y devolver un booleano
+una funcion debe validar si esa misma seccion del mismo curso ya fue asignada en el bloque y devolver un booleano
+una funcion debe validar si todavia quedan horas de catedra para asignar en una seccion y devolver un booleano
+una funcion debe validar si todavia quedan horas de laboratorio para asignar en una seccion y devolver un booleano
+
+una funcion o procedimento alamacenado que obtenga las secciones por nivel
+
+
+
+Para los procedimientos almacenado
+
+s de modificacion.
+
+debe haber una funcion que devuelva to
+
+
+
+
