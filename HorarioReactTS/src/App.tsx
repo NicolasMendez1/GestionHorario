@@ -1,6 +1,7 @@
 import './App.css'
 import { ListaCursos } from './components/Curso/ListaCursos'
 import { ListaProfesores } from './components/Profesor/ListaProfesores'
+import { ListaSalas } from './components/Sala/ListaSalas'
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
     <div style={{display: 'flex', flexDirection: 'row'}}>
       <ListaCursos />
       <ListaProfesores />
+      <ListaSalas />
     </div>
   )
 }
