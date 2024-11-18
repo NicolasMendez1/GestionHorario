@@ -7,15 +7,12 @@ class CursoRepository {
 
     subscribe(callback: () => void): void {
         this.subscribers.push(callback);
-        console.log('Suscribiendose');
     }
 
     private notifySubscribers(): void {
         this.subscribers.forEach(callback => {
             callback();
-            console.log('Notificando susc...');
         });
-        console.log('Notificando suscriptores...');
     }
 
     getAll(): Curso[] {

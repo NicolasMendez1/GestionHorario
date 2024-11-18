@@ -13,13 +13,10 @@ export const ListaCursos = () => {
     }, []);
 
     useEffect(() => {
-        
         cursoRepository.subscribe(cargarCursos);
-        console.log('Suscribiendo a cambios en el repositorio de cursos...');
     }, []);
 
     const cargarCursos = () => {
-        console.log('Cargando cursos...');
         try {
             const cursosData = cursoRepository.getAll();
             setCursos([...cursosData]);
