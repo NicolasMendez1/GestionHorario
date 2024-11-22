@@ -1,0 +1,107 @@
+---------------------------------------------------
+---------PROCEDIMIENTOS CRUD PARA PROFESOR---------
+---------------------------------------------------
+
+--------------------------------------------
+------------LEER PROFESOR-------------------
+--------------------------------------------
+
+CREATE OR REPLACE PROCEDURE NHMR_LEER_PROFESOR(
+    CODIGO_P NUMBER
+)
+IS  
+    CURSOR INFO_PROFESOR IS
+        SELECT *
+        FROM NHMR_PROFESOR
+        WHERE CODIGO = CODIGO_P;
+
+BEGIN
+    FOR i IN INFO_PROFESOR LOOP
+        DBMS_OUTPUT.PUT_LINE('Codigo: ' || i.CODIGO);
+        DBMS_OUTPUT.PUT_LINE('Nombre: ' || i.NOMBRE);
+        DBMS_OUTPUT.PUT_LINE('Apellido Materno: ' || i.APELLIDO_MATERNO);
+        DBMS_OUTPUT.PUT_LINE('Apellido Paterno: ' || i.APELLIDO_PATERNO);
+        DBMS_OUTPUT.PUT_LINE('ES FULL TIME: ' || CASE 
+                                                     WHEN i.ES_FULL_TIME = 1 THEN 'SI'
+                                                     WHEN i.ES_FULL_TIME = 0 THEN 'NO'
+                                                 END);
+    END LOOP;
+END;
+
+--PROBAR 
+BEGIN
+    NHMR_LEER_PROFESOR(1);
+END;
+
+-----------------------------------------------------
+-----------------INSERTAR----------------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_INSERTAR_PROFESOR(
+    CODIGO_P NUMBER,
+    NOMBRE_P VARCHAR2,
+    APELLIDO_PATERNO_P VARCHAR2,
+    APELLIDO_MATERNO_P VARCHAR2,
+    ES_FULL_TIME_P NUMBER
+)
+IS    
+BEGIN
+
+       INSERT INTO GH_PROFESOR(CODIGO, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, ES_FULL_TIME)
+        VALUES (CODIGO_P, NOMBRE_P, APELLIDO_PATERNO_P, APELLIDO_MATERNO_P, ES_FULL_TIME_P);
+END;
+
+
+BEGIN
+    GH_INSERTAR_PROFESOR(3,'Luis','Ponce','Rosales',1);
+END;
+
+-----------------------------------------------------
+------------------ACTUALIZAR PROFE-------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_ACTUALIZAR_PROFESOR(
+    CODIGO_P NUMBER,
+    NOMBRE_P VARCHAR2,
+    APELLIDO_PATERNO_P VARCHAR2,
+    APELLIDO_MATERNO_P VARCHAR2,
+    ES_FULL_TIME_P NUMBER
+)
+IS    
+BEGIN
+        UPDATE GH_PROFESOR SET
+            NOMBRE = NOMBRE_P,
+            APELLIDO_PATERNO = APELLIDO_PATERNO_P,
+            APELLIDO_MATERNO = APELLIDO_MATERNO_P
+        WHERE(CODIGO = CODIGO_P);
+END;
+
+---PROBAR ACTUALIZAR
+
+BEGIN
+    GH_ACTUALIZAR_PROFESOR(3,'Ignacio','perez','rojas',0);
+END;
+
+SELECT *
+FROM GH_PROFESOR;
+
+-----------------------------------------------------
+------------------ELIMINAR---------------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_ELIMINAR_PROFESOR(
+    CODIGO_P NUMBER
+)
+IS    
+BEGIN
+    DELETE FROM GH_PROFESOR
+       WHERE(CODIGO = CODIGO_P);
+END;
+
+--PROBAR EL BORRAR
+BEGIN
+    GH_ELIMINAR_PROFESOR(3);
+END;
+
+SELECT * 
+FROM GH_PROFESOR;

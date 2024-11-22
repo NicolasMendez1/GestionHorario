@@ -1,0 +1,115 @@
+---------------------------------------------------
+----PROCEDIMIENTOS CRUD PARA SALA----
+---------------------------------------------------
+
+-----------------------------------------------------
+------------LEER SALA--------------------------------
+-----------------------------------------------------
+
+
+CREATE OR REPLACE PROCEDURE NHMR_LEER_SALA(
+    CODIGO_SALA_P VARCHAR2
+)
+IS  
+    CURSOR INFO_SALA IS
+        SELECT *
+        FROM NHMR_SALA
+        WHERE CODIGO = CODIGO_SALA_P;
+
+BEGIN
+    FOR i IN INFO_SALA LOOP
+        DBMS_OUTPUT.PUT_LINE('CODIGO SALA: ' || i.CODIGO);
+        DBMS_OUTPUT.PUT_LINE('NOMBRE SALA: ' || i.NOMBRE);
+        DBMS_OUTPUT.PUT_LINE('CAPACIDAD: ' || i.CAPACIDAD);
+        DBMS_OUTPUT.PUT_LINE('ES LABORATORIO: ' || CASE 
+                                                     WHEN i.ES_LABORATORIO = 1 THEN 'SI'
+                                                     WHEN i.ES_LABORATORIO = 0 THEN 'NO'
+                                                 END);
+
+    END LOOP;
+END;
+
+--PROBAR
+BEGIN
+    NHMR_LEER_SALA('DCI03');
+END;
+
+
+-----------------------------------------------------
+-----------------INSERTAR----------------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_INSERTAR_SALA(
+    CODIGO_P VARCHAR2,
+    NOMBRE_P VARCHAR2,
+    CAPACIDAD_P NUMBER, 
+    ES_LABORATORIO_P NUMBER
+)
+IS    
+BEGIN
+
+       INSERT INTO GH_SALA(CODIGO, NOMBRE, CAPACIDAD, ES_LABORATORIO)
+        VALUES (CODIGO_P, NOMBRE_P, CAPACIDAD_P, ES_LABORATORIO_P);
+END;
+
+
+-- PROBAR INSERTANDO DATOS
+BEGIN
+    GH_INSERTAR_SALA('F-204','SALA F-204', 45, 0);
+END;
+
+SELECT *
+FROM GH_SALA;
+
+-----------------------------------------------------
+----------ACTUALIZAR SALA----------------------------
+-----------------------------------------------------
+
+
+
+CREATE OR REPLACE PROCEDURE GH_ACTUALIZAR_SALA(
+    CODIGO_P VARCHAR2,
+    NOMBRE_P VARCHAR2,
+    CAPACIDAD_P NUMBER, 
+    ES_LABORATORIO_P NUMBER
+)
+IS    
+BEGIN
+        UPDATE GH_SALA SET
+            CODIGO = CODIGO_P,
+            NOMBRE = NOMBRE_P,
+            CAPACIDAD = CAPACIDAD_P,
+            ES_LABORATORIO = ES_LABORATORIO_P
+        WHERE(CODIGO = CODIGO_P);
+END;
+
+-- PROBAR ACTUALIZACION
+BEGIN
+    GH_ACTUALIZAR_SALA('F-204', 'NUEVA_SALA', 50,0);
+END;
+
+SELECT *
+FROM GH_SALA;
+
+
+-----------------------------------------------------
+-------------ELIMINAR SALA---------------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_ELIMINAR_SALA(
+    CODIGO_P VARCHAR2
+)
+IS    
+BEGIN
+    DELETE FROM GH_SALA
+       WHERE(CODIGO = CODIGO_P);
+END;
+
+
+-- PROBAR EL BORRAR
+BEGIN
+    GH_ELIMINAR_SALA('F-204');
+END;
+
+SELECT * 
+FROM GH_SALA;

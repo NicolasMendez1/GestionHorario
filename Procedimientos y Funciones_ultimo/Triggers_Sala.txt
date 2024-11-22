@@ -1,0 +1,46 @@
+------------------------------------------------
+------- MAYUSCULAS AL INSERTAR UNA SALA -----
+------------------------------------------------
+
+
+CREATE OR REPLACE TRIGGER GH_MAYUS_INSERT_SALA
+BEFORE INSERT
+ON GH_SALA
+FOR EACH ROW
+BEGIN
+    :NEW.CODIGO := UPPER(:NEW.CODIGO);
+    :NEW.NOMBRE := UPPER(:NEW.NOMBRE);
+END;
+
+
+-- PROBAR AL INSERTAR UNA NUEVA SALA
+BEGIN
+    GH_INSERTAR_SALA('K-110', 'SALA INTRO A LA FE', 45, 0);
+END;
+
+-- VER RESULTADO
+SELECT *
+FROM GH_SALA;
+
+
+------- ----------------------------------------
+------MAYUSCULAS AL ACTUALIZAR UN SALA----------
+------------------------------------------------
+CREATE OR REPLACE TRIGGER GH_MAYUS_UPDATE_SALA
+BEFORE UPDATE
+ON GH_SALA
+FOR EACH ROW
+BEGIN
+    :NEW.CODIGO := UPPER(:NEW.CODIGO);
+    :NEW.NOMBRE := UPPER(:NEW.NOMBRE);
+END;
+
+
+-- PROBAR
+BEGIN
+  GH_ACTUALIZAR_SALA('DCI03', 'LABORATORIO DCI03', 45, 1);
+END;
+
+-- CONSULTAR
+SELECT *
+FROM GH_SALA;

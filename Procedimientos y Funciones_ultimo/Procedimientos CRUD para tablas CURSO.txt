@@ -1,0 +1,134 @@
+---------------------------------------------------
+---------PROCEDIMIENTOS CRUD PARA CURSO---------
+---------------------------------------------------
+
+--------------------------------------------
+------------LEER CURSO-------------------
+--------------------------------------------
+
+CREATE OR REPLACE PROCEDURE NHMR_LEER_CURSO(
+    CODIGO_P VARCHAR2
+)
+IS  
+    CURSOR INFO_CURSO IS
+        SELECT *
+        FROM NHMR_CURSO
+        WHERE CODIGO = CODIGO_P;
+
+BEGIN
+    FOR i IN INFO_CURSO LOOP
+        DBMS_OUTPUT.PUT_LINE('CODIGO: ' || i.CODIGO);
+        DBMS_OUTPUT.PUT_LINE('NOMBRE: ' || i.NOMBRE);
+        DBMS_OUTPUT.PUT_LINE('HORAS CATEDRA: ' || i.HORAS_CATEDRA);
+        DBMS_OUTPUT.PUT_LINE('HORAS LABORATORIO: ' || i.HORAS_LABORATORIO);
+        DBMS_OUTPUT.PUT_LINE('NIVEL: ' || i.NIVEL);
+        DBMS_OUTPUT.PUT_LINE('ES ATEMPORAL: ' || CASE 
+                                                     WHEN i.ES_ATEMPORAL = 1 THEN 'SI'
+                                                     WHEN i.ES_ATEMPORAL = 0 THEN 'NO'
+                                                 END);
+        DBMS_OUTPUT.PUT_LINE('ES CURSO GENERAL: ' || CASE 
+                                                     WHEN i.ES_CURSO_GENERAL = 1 THEN 'SI'
+                                                     WHEN i.ES_CURSO_GENERAL = 0 THEN 'NO'
+                                                 END);
+        DBMS_OUTPUT.PUT_LINE('CANTIDAD DE ESTUDIANTES: ' || i.CANTIDAD_DE_ESTUDIANTES);
+
+    END LOOP;
+END;
+
+--PROBAR 
+
+BEGIN
+    NHMR_LEER_CURSO('INF-113');
+END;
+
+-----------------------------------------------------
+-----------------INSERTAR----------------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_INSERTAR_CURSO(
+    CODIGO_P VARCHAR2,
+    NOMBRE_P VARCHAR2,
+    HORAS_CATEDRA_P NUMBER,
+    HORAS_LABORATORIO_P NUMBER,
+    NIVEL_P NUMBER,
+    ES_ATEMPORAL_P NUMBER,
+    ES_CURSO_GENERAL_P NUMBER,
+    CANTIDAD_DE_ESTUDIANTES_P NUMBER
+)
+IS    
+BEGIN
+
+       INSERT INTO GH_CURSO(CODIGO, NOMBRE , HORAS_CATEDRA , HORAS_LABORATORIO, NIVEL ,ES_ATEMPORAL,ES_CURSO_GENERAL,CANTIDAD_DE_ESTUDIANTES)
+        VALUES (CODIGO_P, NOMBRE_P, HORAS_CATEDRA_P, HORAS_LABORATORIO_P, NIVEL_P ,ES_ATEMPORAL_P ,ES_CURSO_GENERAL_P,CANTIDAD_DE_ESTUDIANTES_P);
+END;
+
+
+-- PROBAR INSERTANDO DATOS
+BEGIN
+    GH_INSERTAR_CURSO('INF-111','Algebra I',6,0,1,0,1,45);
+END;
+
+SELECT *
+FROM GH_CURSO;
+
+
+-----------------------------------------------------
+------------------ACTUALIZAR CURSO-------------------
+-----------------------------------------------------
+
+
+CREATE OR REPLACE PROCEDURE GH_ACTUALIZAR_CURSO(
+    CODIGO_P VARCHAR2,
+    NOMBRE_P VARCHAR2,
+    HORAS_CATEDRA_P NUMBER,
+    HORAS_LABORATORIO_P NUMBER,
+    NIVEL_P NUMBER,
+    ES_ATEMPORAL_P NUMBER,
+    ES_CURSO_GENERAL_P NUMBER,
+    CANTIDAD_DE_ESTUDIANTES_P NUMBER
+)
+IS    
+BEGIN
+        UPDATE GH_CURSO SET
+            NOMBRE = NOMBRE_P,
+            HORAS_CATEDRA = HORAS_CATEDRA_P,
+            HORAS_LABORATORIO = HORAS_LABORATORIO_P,
+            NIVEL = NIVEL_P,
+            ES_ATEMPORAL = ES_ATEMPORAL_P,
+            ES_CURSO_GENERAL = ES_CURSO_GENERAL_P,
+            CANTIDAD_DE_ESTUDIANTES = CANTIDAD_DE_ESTUDIANTES_P
+        WHERE(CODIGO = CODIGO_P);
+END;
+
+-- PROBAR ACTUALIZACION
+BEGIN
+    GH_ACTUALIZAR_CURSO('INF-111','ALGEBRAA I',4,0,1,0,1,46);
+END;
+
+SELECT *
+FROM GH_CURSO;
+
+
+-----------------------------------------------------
+------------------ELIMINAR---------------------------
+-----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_ELIMINAR_CURSO(
+    CODIGO_P VARCHAR2
+)
+IS    
+BEGIN
+    DELETE FROM GH_CURSO
+       WHERE(CODIGO = CODIGO_P);
+END;
+
+
+
+-- PROBAR EL BORRAR
+BEGIN
+    GH_ELIMINAR_CURSO('INF-111');
+END;
+
+SELECT * 
+FROM GH_CURSO;
+

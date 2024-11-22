@@ -1,0 +1,95 @@
+-- CRUD PARA ROL
+
+-------------------------------------------
+-------LEER ROL------------------------
+-------------------------------------------
+CREATE OR REPLACE PROCEDURE NHMR_LEER_ROL(
+    CODIGO_P NUMBER
+)
+IS  
+    CURSOR INFO_ROL IS
+        SELECT *
+        FROM NHMR_ROL
+        WHERE CODIGO = CODIGO_P;
+
+BEGIN
+    FOR i IN INFO_ROL LOOP
+        DBMS_OUTPUT.PUT_LINE('Codigo: ' || i.CODIGO);
+        DBMS_OUTPUT.PUT_LINE('Nombre Rol: ' || i.NOMBRE_ROL);
+    END LOOP;
+END;
+
+--PROBAR PROCEDIMIENT
+BEGIN
+    NHMR_LEER_ROL(1);
+END;
+
+--------------------------
+---INSERTAR ROL-------
+---------------------------
+
+CREATE OR REPLACE PROCEDURE GH_INSERTAR_ROL(
+    CODIGO_P NUMBER,
+    NOMBRE_ROL_P VARCHAR2
+)
+IS    
+BEGIN
+       INSERT INTO GH_ROL(CODIGO, NOMBRE_ROL)
+        VALUES (CODIGO_P, NOMBRE_ROL_P);
+END;
+
+--PROBAR EL PROCEDIMIENTO
+BEGIN
+    GH_INSERTAR_ROL(3, 'administrativo');
+END;
+
+--CONSULTAR
+SELECT *
+FROM GH_ROL;
+
+
+---------------------------------------
+---------ACTUALIZAR ROL------------
+---------------------------------------
+
+CREATE OR REPLACE PROCEDURE GH_ACTUALIZAR_ROL(
+    CODIGO_P NUMBER,
+    NOMBRE_ROL_P VARCHAR2
+)
+IS    
+BEGIN
+        UPDATE GH_ROL SET
+            NOMBRE_ROL = NOMBRE_ROL_P
+        WHERE(CODIGO = CODIGO_P);
+END;
+
+--PROBAR PROCEDIMIENTO
+BEGIN
+    GH_ACTUALIZAR_ROL(3,'casi asistente');
+END;
+
+--VERIFICAR
+SELECT *
+FROM GH_ROL;
+
+
+--------------------------------------------
+---------ELIMINAR ROL-----------------------
+--------------------------------------------
+CREATE OR REPLACE PROCEDURE GH_ELIMINAR_ROL(
+    CODIGO_P NUMBER
+)
+IS    
+BEGIN
+    DELETE FROM GH_ROL
+       WHERE(CODIGO = CODIGO_P);
+END;
+
+--PROBAR PROCEDIMIENTO
+BEGIN
+    GH_ELIMINAR_ROL(3);
+END;
+
+--CONSULTAR 
+SELECT *
+FROM GH_ROL;

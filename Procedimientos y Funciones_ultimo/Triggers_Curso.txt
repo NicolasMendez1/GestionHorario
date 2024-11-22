@@ -1,0 +1,44 @@
+------------------------------------------------
+------- MAYUSCULAS AL INSERTAR UN CURSO -----
+------------------------------------------------
+
+CREATE OR REPLACE TRIGGER GH_MAYUS_INSERT_CURSO
+BEFORE INSERT
+ON GH_CURSO
+FOR EACH ROW
+BEGIN
+    :NEW.CODIGO := UPPER(:NEW.CODIGO);
+    :NEW.NOMBRE := UPPER(:NEW.NOMBRE);
+END;
+
+
+-- PROBAR AL INSERTAR UN CURSO
+BEGIN
+    GH_INSERTAR_CURSO('inf-110', 'introduccion a la fe', 4, 0, 5, 0, 1, 15);
+END;
+
+-- CONSULTAR
+SELECT *
+FROM GH_CURSO;
+
+------- ----------------------------------------
+------MAYUSCULAS AL ACTUALIZAR UN CURSO -----
+------------------------------------------------
+CREATE OR REPLACE TRIGGER GH_MAYUS_UPDATE_CURSO
+BEFORE UPDATE
+ON GH_CURSO
+FOR EACH ROW
+BEGIN
+    :NEW.CODIGO := UPPER(:NEW.CODIGO);
+    :NEW.NOMBRE := UPPER(:NEW.NOMBRE);
+END;
+
+
+-- PROBAR
+BEGIN
+    GH_ACTUALIZAR_CURSO('INF-113', 'Introduccion a la computacion', 2, 3, 1, 0, 0, 16);
+END;
+
+-- CONSULTAR
+SELECT *
+FROM GH_CURSO;

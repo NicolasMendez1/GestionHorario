@@ -1,0 +1,201 @@
+ FUNCIONES POR TERMINAR
+
+ - Funcion debe validar si la sala esta ocupada en el bloque y devolver un booleano.(LISTA)
+
+ - Funcion debe validar si el docente esta ocupado en el bloque y devolver un booleano.(LISTA)
+
+ - Funcion debe validar si esa misma seccion del mismo curso ya fue asignada en el bloque y devolver un booleano.(LISTA)
+ 
+ - Funcion debe validar si todavia quedan horas de catedra para asignar en una seccion y devolver un booleano.
+
+ - Funcion debe validar si todavia quedan horas de laboratorio para asignar en una seccion y devolver un booleano.
+
+
+--  FUNCIONES 
+
+-
+--  FUNCIONES POR TERMINAR
+
+-------------------------------------------------------------------------------------------
+--1-- Funcion debe validar si la sala esta ocupada en el bloque y devolver un booleano.
+-------------------------------------------------------------------------------------------
+
+
+CREATE OR REPLACE FUNCTION GH_DISP_SALA_BLOQUE(
+    CODIGO_SALA_F IN VARCHAR2,
+    CODIGO_DIA_F IN NUMBER,
+    CODIGO_BLOQUE_F IN NUMBER
+) RETURN NUMBER IS
+    OCUPADA NUMBER;
+BEGIN
+
+    SELECT COUNT(*) INTO OCUPADA
+    FROM GH_SECCION_BLOQUE_DIA BD JOIN GH_SECCION S ON (BD.CODIGO_SECCION = S.CODIGO AND BD.CODIGO_CURSO = S.CODIGO_CURSO) 
+    WHERE (BD.CODIGO_DIA = CODIGO_DIA_F) AND (BD.CODIGO_BLOQUE = CODIGO_BLOQUE_F)
+      AND (S.CODIGO_SALA_CATEDRA = CODIGO_SALA_F OR S.CODIGO_SALA_LABORATORIO = CODIGO_SALA_F
+      );
+    
+    IF OCUPADA > 0 THEN
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END;
+
+------
+PROBAR
+-----
+-- PROBAR LA FUNCION
+SELECT GH_DISP_SALA_BLOQUE('DCI03',1,10)
+FROM DUAL;
+
+
+-----------------------------------------------------------------------------------------------
+-- 2.- Funcion debe validar si el docente esta ocupado en el bloque y devolver un booleano
+-----------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION GH_DISP_PROFE_BLOQUE(
+    CODIGO_PROFESOR_F VARCHAR2,
+    CODIGO_DIA_F NUMBER,
+    CODIGO_BLOQUE_F NUMBER
+) RETURN NUMBER IS
+    OCUPADO NUMBER;
+BEGIN
+
+    SELECT COUNT(*) INTO OCUPADO
+    FROM GH_PROFESOR P JOIN GH_SECCION S ON (P.CODIGO = S.CODIGO_PROFESOR)
+                         JOIN GH_SECCION_BLOQUE_DIA BD ON (BD.CODIGO_SECCION = S.CODIGO AND BD.CODIGO_CURSO = S.CODIGO_CURSO)
+    WHERE (BD.CODIGO_DIA = CODIGO_DIA_F) AND (BD.CODIGO_BLOQUE = CODIGO_BLOQUE_F) AND (S.CODIGO_PROFESOR = CODIGO_PROFESOR_F);
+    
+    IF OCUPADO > 0 THEN
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END;
+
+----------------
+----- PROBAR-------
+----------------
+
+-- PROBAR LA FUNCION
+SELECT GH_DISP_PROFE_BLOQUE(2,1,11)
+FROM DUAL;
+
+
+----------------------------------------------------------------------------------------------------------------------------
+--3.-  - Funcion debe validar si UNA misma seccion del mismo curso ya fue asignada en el bloque y devolver un booleano.
+-------------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION GH_CONSULTA_SECCION_BLOQUE_DIA(
+    CODIGO_SECCION_F VARCHAR2,
+    CODIGO_CURSO_F VARCHAR2,
+    CODIGO_DIA_F NUMBER,
+    CODIGO_BLOQUE_F NUMBER,
+    ES_BLOQUE_DE_LABORATORIO_F NUMBER
+) RETURN NUMBER IS
+    ASIGNADO NUMBER;
+BEGIN
+
+    SELECT COUNT(*) INTO ASIGNADO
+    FROM GH_SECCION S JOIN GH_SECCION_BLOQUE_DIA BD ON (BD.CODIGO_SECCION = S.CODIGO AND BD.CODIGO_CURSO = S.CODIGO_CURSO)
+    WHERE (BD.CODIGO_SECCION = CODIGO_SECCION_F) AND (BD.CODIGO_CURSO = CODIGO_CURSO_F)
+                                         AND (BD.CODIGO_DIA = CODIGO_DIA_F) 
+                                         AND (BD.CODIGO_BLOQUE = CODIGO_BLOQUE_F)
+                                         AND (BD.ES_BLOQUE_DE_LABORATORIO = ES_BLOQUE_DE_LABORATORIO_F); 
+
+    IF ASIGNADO > 0 THEN
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END;
+
+-- PROBAR LA FUNCION
+SELECT GH_CONSULTA_SECCION_BLOQUE_DIA('S2','INF-113',1,11,1)
+FROM DUAL;
+
+
+
+------------------------------------------------------------------------------------------------------------------
+-- 4  - Funcion debe validar si todavia quedan horas de catedra para asignar en una seccion y devolver un booleano.
+------------------------------------------------------------------------------------------------------------------
+
+
+CREATE OR REPLACE FUNCTION GH_VALIDAR_SECCION_HORAS_CATEDRA(
+    CODIGO_SECCION_F VARCHAR2,
+    CODIGO_CURSO_F VARCHAR2
+) RETURN NUMBER IS
+    HORAS_ASIGNADAS NUMBER;
+    HORAS_CATEDRA_TOTAL NUMBER;
+BEGIN
+
+    SELECT CU.HORAS_CATEDRA INTO HORAS_CATEDRA_TOTAL
+    FROM GH_CURSO CU 
+    WHERE (CU.CODIGO = CODIGO_CURSO_F);
+
+    --VER NULOS, SI EL CURSO NO TIENE HORAS CATEDRA
+    IF HORAS_CATEDRA_TOTAL IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20001, 'EL CURSO NO TIENE HORAS CATEDRA DEFINIDAS');
+    END IF;
+
+    -- CONTAR CANTIDAD DE HORAS CATEDRA QUE YA HAN SIDO ASIGNADAS
+    SELECT COUNT(*) INTO HORAS_ASIGNADAS
+    FROM GH_SECCION_BLOQUE_DIA BD
+    WHERE BD.CODIGO_SECCION = CODIGO_SECCION_F AND BD.CODIGO_CURSO = CODIGO_CURSO_F AND BD.ES_BLOQUE_DE_LABORATORIO = 0;
+
+    -- VERIFICAR SI FALTAN HORAS POR ASIGNAR
+    IF HORAS_ASIGNADAS >= HORAS_CATEDRA_TOTAL THEN
+        RETURN 0;
+    ELSE
+        RETURN 1;
+    END IF;
+   
+END;
+
+----------------------------------------------------
+------------PROBAR FUNCION---------------------------
+
+SELECT GH_VALIDAR_SECCION_HORAS_CATEDRA('S1','INF-113')
+FROM DUAL;
+
+
+----------------------------------------------------------------------------------------------------------------------
+-- 5 - Funcion debe validar si todavia quedan horas de laboratorio para asignar en una seccion y devolver un booleano.
+----------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION GH_VALIDAR_SECCION_HORAS_LAB(
+    CODIGO_SECCION_F VARCHAR2,
+    CODIGO_CURSO_F VARCHAR2
+) RETURN NUMBER IS
+    HORAS_ASIGNADAS NUMBER;
+    HORAS_LABORATORIO_TOTAL NUMBER;
+BEGIN
+
+    SELECT CU.HORAS_LABORATORIO INTO HORAS_LABORATORIO_TOTAL
+    FROM GH_CURSO CU 
+    WHERE (CU.CODIGO = CODIGO_CURSO_F);
+
+    --VER NULOS, SI EL CURSO NO TIENE HORAS LABORATORIO
+    IF HORAS_LABORATORIO_TOTAL IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20001, 'EL CURSO NO TIENE HORAS LABORATORIO DEFINIDAS');
+    END IF;
+
+    -- CONTAR CANTIDAD DE HORAS LABORATORIO QUE YA HAN SIDO ASIGNADAS
+    SELECT COUNT(*) INTO HORAS_ASIGNADAS
+    FROM GH_SECCION_BLOQUE_DIA BD
+    WHERE BD.CODIGO_SECCION = CODIGO_SECCION_F AND BD.CODIGO_CURSO = CODIGO_CURSO_F AND BD.ES_BLOQUE_DE_LABORATORIO = 1;
+
+    -- VERIFICAR SI FALTAN HORAS POR ASIGNAR
+    IF HORAS_ASIGNADAS >= HORAS_LABORATORIO_TOTAL THEN
+        RETURN 0;
+    ELSE
+        RETURN 1;
+    END IF;
+   
+END;
+
+-- PROBAR FUNCION
+SELECT GH_VALIDAR_SECCION_HORAS_LAB('S1','INF-113')
+FROM DUAL;
+
+
+

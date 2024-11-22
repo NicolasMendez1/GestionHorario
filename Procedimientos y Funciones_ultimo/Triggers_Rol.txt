@@ -1,0 +1,43 @@
+------------------------------------------------
+------- MAYUSCULAS AL INSERTAR UN ROL -----
+------------------------------------------------
+
+CREATE OR REPLACE TRIGGER GH_MAYUS_INSERT_ROL
+BEFORE INSERT
+ON GH_ROL
+FOR EACH ROW
+BEGIN
+    :NEW.NOMBRE_ROL := UPPER(:NEW.NOMBRE_ROL);
+END;
+
+
+-- PROBAR TRIGGER
+BEGIN
+    GH_INSERTAR_ROL(4, 'admin');
+END;
+
+-- CONSULTAR
+SELECT *
+FROM GH_ROL;
+
+
+
+------- ----------------------------------------
+------MAYUSCULAS AL ACTUALIZAR UN ROL-------
+------------------------------------------------
+CREATE OR REPLACE TRIGGER GH_MAYUS_UPDATE_ROL
+BEFORE UPDATE
+ON GH_ROL
+FOR EACH ROW
+BEGIN
+    :NEW.NOMBRE_ROL := UPPER(:NEW.NOMBRE_ROL);
+END;
+
+
+-- PROBAR
+BEGIN
+    GH_ACTUALIZAR_ROL(2, 'asistente');
+END;
+
+SELECT * 
+FROM GH_ROL;
